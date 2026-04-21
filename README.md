@@ -1,6 +1,7 @@
 # 🎤 Custom Speech Plus
 
 A powerful and flexible Discord bot that lets users create, edit, and manage custom commands with ease.
+https://img.shields.io/badge/python-3.10-blue https://img.shields.io/badge/bot-discord-5865F2 https://img.shields.io/badge/made%20by-Mikougo-orange
 
 ---
 
