@@ -1,10 +1,11 @@
 # 🎤 Custom Speech Plus
 
-A powerful and flexible Discord bot that lets users create, edit, and manage custom commands with ease.
 ![Python](https://img.shields.io/badge/python-3.10-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Bot](https://img.shields.io/badge/discord-bot-5865F2)
 ![Made by](https://img.shields.io/badge/made%20by-Mikougo-orange)
+
+A customizable Discord bot that lets server staff create, edit, delete, and view custom text commands with persistent storage and admin protection.
 
 ---
 
@@ -14,10 +15,11 @@ A powerful and flexible Discord bot that lets users create, edit, and manage cus
 * ✏️ Edit command triggers and responses
 * ❌ Delete commands
 * 📜 View all commands with `!cmds`
-* 🔒 Admin-only command management
+* 🔒 Only server owner and admins can manage commands
 * 💾 Persistent storage using `commands.json`
-* ⚡ Fast performance with in-memory caching
-* 🧠 Smart editing system (change trigger, response, or both)
+* ⚡ In-memory caching for better performance
+* 🧠 Supports multi-word triggers
+* ⏱️ Cooldown protection for command listing and custom trigger spam
 
 ---
 
@@ -28,7 +30,11 @@ A powerful and flexible Discord bot that lets users create, edit, and manage cus
 !hello
 → yobru
 
-!editcmd hello = hi - yobru = hey bro
+!editcmd hello = hi -
+!hi
+→ yobru
+
+!editcmd - yobru = hey bro
 !hi
 → hey bro
 
@@ -41,11 +47,13 @@ A powerful and flexible Discord bot that lets users create, edit, and manage cus
 
 ## 🔐 Permissions
 
-Only users with **Administrator** permission (or the server owner) can:
+Only users with **Administrator** permission or the **server owner** can:
 
 * Add commands
 * Edit commands
 * Delete commands
+
+Everyone can use the custom commands that already exist.
 
 ---
 
@@ -57,6 +65,8 @@ Only users with **Administrator** permission (or the server owner) can:
 ├── commands.json
 ├── requirements.txt
 ├── .gitignore
+├── LICENSE
+└── README.md
 ```
 
 ---
@@ -76,9 +86,7 @@ cd Custom-Speech-Plus
 pip install -r requirements.txt
 ```
 
-3. Set your bot token:
-
-* Create a `.env` file (for local use only)
+3. Create a `.env` file for local testing:
 
 ```env
 DISCORD_TOKEN=your_bot_token_here
@@ -94,13 +102,13 @@ python base.py
 
 ## 🚀 Deployment
 
-This bot is ready to be deployed on platforms like:
+This bot can be deployed on platforms such as:
 
 * Railway
 * Render
 * VPS
 
-Make sure to set your environment variable:
+Set the environment variable:
 
 ```text
 DISCORD_TOKEN=your_bot_token_here
@@ -112,17 +120,18 @@ DISCORD_TOKEN=your_bot_token_here
 
 * Do **NOT** share your bot token
 * Do **NOT** upload your `.env` file
-* Use environment variables in production
+* Enable **Message Content Intent** in the Discord Developer Portal
+* Use `requirements.txt` when deploying
 
 ---
 
 ## 🧠 Future Ideas
 
 * Per-server command storage
-* Command cooldown system
-* Embed responses
-* Command permissions per role
-* Web dashboard 👀
+* Command categories
+* Better logging for who edited what
+* Embed-style responses
+* Dashboard or web panel
 
 ---
 
@@ -134,5 +143,4 @@ Made by **Mikougo**
 
 ## ⭐ Final Note
 
-This started as a simple bot and evolved into a fully dynamic custom command system.
-More features coming soon 🚀
+Custom Speech Plus started as a simple idea and became a real deployed Discord bot with live users, admin protection, persistence, and performance improvements.
