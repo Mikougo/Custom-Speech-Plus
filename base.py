@@ -20,7 +20,7 @@ RESERVED_COMMANDS = {"addcmd", "editcmd", "delcmd", "cmds", "help"}
 # In-memory cache
 custom_commands = {}
 
-# Simple cooldown for custom commands
+# Simple cooldown for custom text triggers
 user_cooldowns = {}
 CUSTOM_COMMAND_COOLDOWN = 2.0  # seconds
 
@@ -32,10 +32,7 @@ def load_commands():
     try:
         with open(COMMANDS_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
-            if isinstance(data, dict):
-                custom_commands = data
-            else:
-                custom_commands = {}
+            custom_commands = data if isinstance(data, dict) else {}
     except FileNotFoundError:
         custom_commands = {}
     except json.JSONDecodeError:
@@ -101,20 +98,25 @@ async def on_message(message):
     if message.author.bot:
         return
 
-    if not message.content.startswith("!"):
-        await bot.process_commands(message)
+    # Let built-in commands like !addcmd, !editcmd, !cmds work
+    await bot.process_commands(message)
+
+    # Only then check custom triggers
+    content = message.content.strip()
+    if not content.startswith("!"):
         return
 
-    command_name = message.content[1:].strip().lower()
+    trigger = content[1:].strip().lower()
 
-    if command_name in custom_commands:
+    # Prevent custom commands from shadowing management commands
+    if trigger in RESERVED_COMMANDS:
+        return
+
+    if trigger in custom_commands:
         if is_on_cooldown(message.author.id):
             return
 
-        await message.channel.send(custom_commands[command_name])
-        return
-
-    await bot.process_commands(message)
+        await message.channel.send(custom_commands[trigger])
 
 
 # ---------- ADD COMMAND ----------
@@ -179,6 +181,7 @@ async def editcmd(ctx, *, content):
     old_response = None
     new_response = None
 
+    # ----- trigger edit part -----
     if trigger_part:
         if "=" not in trigger_part:
             await ctx.send("Invalid trigger format. Use: old trigger = new trigger")
@@ -204,6 +207,7 @@ async def editcmd(ctx, *, content):
             await ctx.send("That new trigger already exists.")
             return
 
+    # ----- response edit part -----
     if response_part:
         if "=" not in response_part:
             await ctx.send("Invalid response format. Use: old response = new response")
@@ -251,7 +255,7 @@ async def editcmd(ctx, *, content):
         await ctx.send(f"Updated trigger: !{old_trigger} -> !{new_trigger}")
         return
 
-    # Trigger and response
+    # Trigger + response
     current_response = custom_commands[old_trigger]
 
     if current_response != old_response:
@@ -310,5 +314,8 @@ async def cmds_error(ctx, error):
         await ctx.send(f"Slow down bro 😭 try again in {error.retry_after:.1f}s")
 
 
-# ---------- START ----------
+# ---------- RUN ----------
+if not TOKEN:
+    raise ValueError("DISCORD_TOKEN is missing.")
+
 bot.run(TOKEN)
